@@ -1,19 +1,19 @@
-import { Lock, Mail } from "lucide-react";
+import {Lock, Mail} from "lucide-react";
 import FormInput from "../Ui/FormInput";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
 const SignUpForm = () => {
 	const schema = z.object({
-		email: z.string().email({ message: "Invalid email address" }),
+		email: z.string().email({message: "Invalid email address"}),
 		password: z
 			.string()
-			.min(6, { message: "Password must be at least 6 characters" }),
+			.min(6, {message: "Password must be at least 6 characters"}),
 	});
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: {errors},
 	} = useForm({
 		resolver: zodResolver(schema),
 	});
@@ -25,6 +25,7 @@ const SignUpForm = () => {
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="space-y-6">
 				<FormInput
+					label="Email"
 					name="email"
 					type="email"
 					placeholder="Enter your Email"
@@ -34,6 +35,7 @@ const SignUpForm = () => {
 				/>
 
 				<FormInput
+					label="Password"
 					name="password"
 					type="password"
 					placeholder="Enter your Password"

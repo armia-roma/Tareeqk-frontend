@@ -21,7 +21,7 @@ export default function TowingLoginPage() {
 							<p className="text-sm text-blue-300 mb-4">
 								{isSignUp
 									? "Already have an account?"
-									: "New to QuickTow?"}
+									: "New to Towing?"}
 							</p>
 							<button
 								className="text-sm text-yellow-400 hover:text-yellow-300"

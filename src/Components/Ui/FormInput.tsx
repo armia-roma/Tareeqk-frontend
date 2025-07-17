@@ -1,6 +1,7 @@
 import React from "react";
 
 interface FormInputProps {
+	label?: string;
 	name: string;
 	type?: string;
 	icon?: React.ReactNode;
@@ -10,6 +11,7 @@ interface FormInputProps {
 }
 
 const FormInput: React.FC<FormInputProps> = ({
+	label,
 	name,
 	type = "text",
 	icon,
@@ -19,6 +21,7 @@ const FormInput: React.FC<FormInputProps> = ({
 }) => {
 	return (
 		<div className="space-y-1">
+			<label className="block text-sm font-medium mb-2">{label}</label>
 			<div className="flex items-center border rounded-xl pl-3 pr-3">
 				{icon}
 				<input
