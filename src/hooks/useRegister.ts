@@ -1,6 +1,7 @@
 import { useState } from "react";
 import apiClient from "../services/apiClient";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "./useAlert";
 interface RegisterFormData {
 	name: string;
 	email: string;
@@ -9,14 +10,11 @@ interface RegisterFormData {
 
 export const useRegister = () => {
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [message, setMessage] = useState<string | null>(null);
+	const { showAlert } = useAlert();
 	const navigate = useNavigate();
 
 	const signUp = async (data: RegisterFormData) => {
 		setLoading(true);
-		setError(null);
-		setMessage(null);
 
 		try {
 			const res = await apiClient.post("/register", data);
@@ -31,18 +29,18 @@ export const useRegister = () => {
 				localStorage.setItem("token", token);
 				localStorage.setItem("user", JSON.stringify(user));
 				navigate("/towing-request");
+				showAlert(message, "success");
 			}
-			console.log("Registration successful:", res);
-			setMessage("Registration completed successfully.");
 			return { success, message, user };
 		} catch (err: any) {
-			console.error("Registration error:", err);
-			setError("Registration failed. Please check the data.");
-			return null;
+			showAlert(
+				err?.response?.data?.message || "Registration failed",
+				"error"
+			);
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	return { signUp, loading, error, message };
+	return { signUp, loading };
 };
