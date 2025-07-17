@@ -5,8 +5,11 @@ const defaultCenter = {
 	lat: 25.2759665,
 	lng: 55.3620658,
 };
+interface MapPageProps {
+	onLocationChange: (position: google.maps.LatLngLiteral) => void;
+}
 
-export default function MapPage() {
+export default function Map({ onLocationChange }: MapPageProps) {
 	const [currentPosition, setCurrentPosition] =
 		useState<google.maps.LatLngLiteral>(defaultCenter);
 	const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -16,28 +19,42 @@ export default function MapPage() {
 		googleMapsApiKey: "AIzaSyCGRRVL7FlEoJNCN9Ljk8xo4dF9k2pNu_I",
 	});
 
-	const onLoad = useCallback((map: google.maps.Map) => {
-		setMap(map);
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				const location = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude,
-				};
-				setCurrentPosition(location);
-				map.setCenter(location);
-			},
-			() => {
-				map.setCenter(defaultCenter);
-			},
-			{ enableHighAccuracy: true }
-		);
-	}, []);
+	const onLoad = useCallback(
+		(map: google.maps.Map) => {
+			setMap(map);
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const location = {
+						lat: position.coords.latitude,
+						lng: position.coords.longitude,
+					};
+					setCurrentPosition(location);
+					onLocationChange(location); //  Notify parent
+					map.setCenter(location);
+				},
+				() => {
+					map.setCenter(defaultCenter);
+				},
+				{ enableHighAccuracy: true }
+			);
+		},
+		[onLocationChange]
+	);
 
 	const onUnmount = useCallback(() => {
 		setMap(null);
 	}, []);
 
+	const handleMapClick = (e: google.maps.MapMouseEvent) => {
+		if (e.latLng) {
+			const newPos = {
+				lat: e.latLng.lat(),
+				lng: e.latLng.lng(),
+			};
+			setCurrentPosition(newPos);
+			onLocationChange(newPos); // 🔸 Notify parent
+		}
+	};
 	if (!isLoaded) {
 		return (
 			<div className="flex items-center justify-center w-full h-[300px]">
@@ -55,14 +72,7 @@ export default function MapPage() {
 					zoom={15}
 					onLoad={onLoad}
 					onUnmount={onUnmount}
-					onClick={(e) => {
-						if (e.latLng) {
-							setCurrentPosition({
-								lat: e.latLng.lat(),
-								lng: e.latLng.lng(),
-							});
-						}
-					}}
+					onClick={handleMapClick}
 					options={{
 						zoomControl: false,
 						mapTypeControl: false,
