@@ -3,8 +3,10 @@ import FormInput from "../Ui/FormInput";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useRegister} from "./../../hooks/useRegister";
 const SignUpForm = () => {
 	const schema = z.object({
+		name: z.string().min(1, {message: "Name is required"}),
 		email: z.string().email({message: "Invalid email address"}),
 		password: z
 			.string()
@@ -17,13 +19,24 @@ const SignUpForm = () => {
 	} = useForm({
 		resolver: zodResolver(schema),
 	});
+	const {signUp, loading} = useRegister();
 	type FormData = z.infer<typeof schema>;
-	const onSubmit = (data: FormData) => {
-		console.log("Form submitted:", data);
+	const onSubmit = async (data: FormData) => {
+		await signUp(data);
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="space-y-6">
+				<FormInput
+					label="Name"
+					name="name"
+					type="name"
+					placeholder="Enter your Name"
+					icon={<Mail className="text-blue-300 w-5 h-5" />}
+					register={register}
+					error={errors.name?.message}
+				/>
+
 				<FormInput
 					label="Email"
 					name="email"
@@ -46,9 +59,10 @@ const SignUpForm = () => {
 
 				<button
 					type="submit"
-					className="w-full py-3 px-4 bg-gradient-to-r from-yellow-400 to-orange-50 font-semibold rounded-xl shadow-lg focus:outline-none "
+					className="w-full py-3 px-4 bg-gradient-to-r from-yellow-400 to-orange-50 font-semibold rounded-xl shadow-lg"
+					disabled={loading}
 				>
-					Sign Up
+					{loading ? "wait..." : "Sign Up"}
 				</button>
 			</div>
 		</form>
