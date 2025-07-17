@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "../Ui/FormInput";
+
+import { useLogin } from "../../hooks/useLogin";
 const LoginForm = () => {
 	const schema = z.object({
 		email: z.string().email({ message: "Invalid email address" }),
@@ -19,8 +21,9 @@ const LoginForm = () => {
 		resolver: zodResolver(schema),
 	});
 	type FormData = z.infer<typeof schema>;
-	const onSubmit = (data: FormData) => {
-		console.log("Form submitted:", data);
+	const { login, loading, error } = useLogin();
+	const onSubmit = async (data: FormData) => {
+		await login(data);
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
