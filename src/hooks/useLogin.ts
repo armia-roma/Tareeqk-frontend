@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../services/apiClient";
+import { useAlert } from "./useAlert";
 interface LoginFormData {
 	email: string;
 	password: string;
@@ -8,12 +9,11 @@ interface LoginFormData {
 
 export const useLogin = () => {
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const { showAlert } = useAlert();
 	const navigate = useNavigate();
 
 	const login = async (data: LoginFormData) => {
 		setLoading(true);
-		setError(null);
 
 		try {
 			const res = await apiClient.post("/login", data);
@@ -29,16 +29,16 @@ export const useLogin = () => {
 				localStorage.setItem("token", token);
 				localStorage.setItem("user", JSON.stringify(user));
 				navigate("/towing-request");
+				showAlert(message, "success");
 			}
 
 			return { success, message, user };
 		} catch (err: any) {
-			setError("Login failed. Please check your credentials.");
-			return null;
+			showAlert(err.response.data.message, "error");
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	return { login, loading, error };
+	return { login, loading };
 };
