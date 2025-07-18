@@ -33,10 +33,7 @@ export const useRegister = () => {
 			}
 			return { success, message, user };
 		} catch (err: any) {
-			showAlert(
-				err?.response?.data?.message || "Registration failed",
-				"error"
-			);
+			showAlert(err?.response?.data?.message || "Server error", "error");
 		} finally {
 			setLoading(false);
 		}

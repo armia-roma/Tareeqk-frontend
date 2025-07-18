@@ -34,7 +34,8 @@ export const useLogin = () => {
 
 			return { success, message, user };
 		} catch (err: any) {
-			showAlert(err.response.data.message, "error");
+			const errorMessage = err.response?.data?.message || "Server error";
+			showAlert(errorMessage, "error");
 		} finally {
 			setLoading(false);
 		}
