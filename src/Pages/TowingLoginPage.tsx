@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import Logo from "./Components/Auth/Logo";
-import LoginForm from "./Components/Auth/LoginForm";
-import SignUpForm from "./Components/Auth/SignUpForm";
+import React, { useState } from "react";
+import Logo from "./../Components/Auth/Logo";
+import LoginForm from "../Components/Auth/LoginForm";
+import SignUpForm from "../Components/Auth/SignUpForm";
 
 export default function TowingLoginPage() {
 	const [isSignUp, setIsSignUp] = useState(false);
